@@ -1,8 +1,38 @@
-I'll provide a comprehensive, step-by-step guide to creating a basic website with login/register functionality using the technologies you mentioned. I'll break this down into multiple artifacts to make it clear and manageable.
+This is a comprehensive guide to setting up a full-stack login/register application. This is a complete beginner guide and all the stepts are explained in detail.
+Look for the following icon if you want a detailed explaination of the current topic "[^1]"
 
-### Importent not, this guide is for Windows. Commands will not work on Linux or Mac
+## Technologies Used in This Project
+
+### Backend
+- **Node.js** - JavaScript runtime environment
+- **Express** - Web application framework for Node.js
+- **TypeScript** - Typed JavaScript language
+- **MySQL** - Relational database
+- **WAMP Server** - Windows, Apache, MySQL, and PHP stack
+- **bcryptjs** - Password hashing library
+- **jsonwebtoken (JWT)** - Authentication token implementation
+- **cors** - Cross-Origin Resource Sharing middleware
+- **dotenv** - Environment variable management
+
+### Frontend
+- **React** - JavaScript library for building user interfaces
+- **TypeScript** - For type safety
+- **React Bootstrap** - UI component library
+- **axios** - Promise-based HTTP client
+- **react-router-dom** - Client-side routing
+
+### Development Tools
+- **npm** - Package manager
+- **ts-node-dev** - TypeScript execution and development environment
+- **phpMyAdmin** (via WAMP) - Database management tool
+
+---
+
+*NOTE*: this guide is for Windows. Commands will not work on Linux or Mac
+
+---
+
 Let's start with the project setup:
-
 
 
 # Full-Stack React + Express Login/Register Application Setup
@@ -155,18 +185,17 @@ Makes it easier for other developers to understand your codebase
 
 ## Step-by-Step Implementation Guide for Authentication System
 
-### 1. Database Connection Setup
+## 1. Database Connection Setup
 
-**Step 1.1: Create environment file** 
- </br> 
-Now you can proceed with creating the .env file:
+### Step 1.1: Create environment file 
+
 
 ####  1. Navigate to the right directory
 
 Make sure you are in the project root directory
 How you do this depends on where you are currently in the command line. 
-How do I navigate in the terminal?[^1]
 
+How do I navigate in the terminal?[^2]
 
 Then navigate to the backend directory:
 ```cmd
@@ -193,111 +222,186 @@ DB_PASSWORD=
 DB_NAME=login_app_db
 JWT_SECRET=your_super_secure_jwt_secret
 ```
-What is a JWT secret?[^2]
+What is a JWT secret?[^3]
 
 4. Replace `your_password_here` with your actual MySQL password
    you can leave it empty if (you don't have a password set for the root user)
 5. Replace `your_super_secure_jwt_secret` with a strong random string (at least 32 characters)
 
-**Step 1.2: Create database configuration file**
-1. Navigate to backend folder
-2. Create a directory: `src/config`
-3. Inside that directory, create a file named `database.ts`
-4. Add the following code:
-   ```typescript
-   import mysql from 'mysql2';
-   import dotenv from 'dotenv';
+### **Step 1.2: Create database configuration file**
+*NOTE:* For this part there will be a step by step guide for both CMD and PowerShell
+But for the rest of the project, I will only provide the CMD commands
+If you want to use PowerShell, you can look up the respective commands
+#### Option 1: Using Command Prompt (CMD)
 
-   // Load environment variables
-   dotenv.config();
+1. Navigate to the backend directory
+  ```cmd
+  cd backend
+  ```
 
-   // Create MySQL connection
-   export const dbConnection = mysql.createConnection({
-     host: process.env.DB_HOST || 'localhost',
-     user: process.env.DB_USER || 'root',
-     password: process.env.DB_PASSWORD || '',
-     database: process.env.DB_NAME || 'login_app_db'
-   });
-   ```
+2. Create the config directory
+  ```cmd
+  mkdir src\config
+  ```
+
+3. Navigate to the config directory
+  ```cmd
+  cd src\config
+  ```
+
+4. Create the database.ts file
+  ```cmd
+  echo. > database.ts
+  ```
+
+5. Open the file in your editor and add the following code:
+  ```typescript
+  import mysql from 'mysql2';
+  import dotenv from 'dotenv';
+
+  // Load environment variables
+  dotenv.config();
+
+  // Create MySQL connection
+  export const dbConnection = mysql.createConnection({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'login_app_db'
+  });
+  ```
+
+#### Option 2: Using PowerShell
+
+1. Navigate to the backend directory
+  ```powershell
+  cd backend
+  ```
+
+2. Create the config directory
+  ```powershell
+  New-Item -Path "src\config" -ItemType Directory -Force
+  ```
+
+3. Create the database.ts file directly
+  ```powershell
+  New-Item -Path "src\config\database.ts" -ItemType File -Force
+  ```
+
+4. Open the file in your editor and add the following code:
+  ```typescript
+  import mysql from 'mysql2';
+  import dotenv from 'dotenv';
+
+  // Load environment variables
+  dotenv.config();
+
+  // Create MySQL connection
+  export const dbConnection = mysql.createConnection({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'login_app_db'
+  });
+  ```
 
 ## 2. User Model Creation
 
 **Step 2.1: Create user model**
-1. Create a directory: `src/models`
-2. Inside that directory, create a file named `userModel.ts`
-3. Add the following code:
-   ```typescript
-   import { dbConnection } from '../config/database';
-   import bcrypt from 'bcryptjs';
 
-   interface User {
-     id?: number;
-     username: string;
-     email: string;
-     password: string;
-     created_at?: Date;
-   }
+1. Navigate to the backend directory
+  ```cmd
+  cd backend
+  ```
 
-   export const UserModel = {
-     // Find user by email
-     findByEmail: (email: string): Promise<User | null> => {
-       return new Promise((resolve, reject) => {
-         dbConnection.query(
-           'SELECT * FROM users WHERE email = ?',
-           [email],
-           (err, results: any) => {
-             if (err) return reject(err);
-             if (results.length === 0) return resolve(null);
-             return resolve(results[0]);
-           }
-         );
-       });
-     },
+2. Create models directory (if it doesn't exist)
+  ```cmd
+  mkdir src\models
+  ```
 
-     // Find user by username
-     findByUsername: (username: string): Promise<User | null> => {
-       return new Promise((resolve, reject) => {
-         dbConnection.query(
-           'SELECT * FROM users WHERE username = ?',
-           [username],
-           (err, results: any) => {
-             if (err) return reject(err);
-             if (results.length === 0) return resolve(null);
-             return resolve(results[0]);
-           }
-         );
-       });
-     },
+3. Navigate to the models directory
+  ```cmd
+  cd src\models
+  ```
 
-     // Create new user
-     create: async (userData: User): Promise<User> => {
-       // Hash password
-       const salt = await bcrypt.genSalt(10);
-       const hashedPassword = await bcrypt.hash(userData.password, salt);
+4. Create the user model file
+  ```cmd
+  echo. > userModel.ts
+  ```
 
-       return new Promise((resolve, reject) => {
-         dbConnection.query(
-           'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-           [userData.username, userData.email, hashedPassword],
-           (err, result: any) => {
-             if (err) return reject(err);
-             
-             // Return created user (without password)
-             const newUser = {
-               id: result.insertId,
-               username: userData.username,
-               email: userData.email,
-               password: '',
-               created_at: new Date()
-             };
-             
-             return resolve(newUser);
-           }
-         );
-       });
-     }
-   };
-   ```
+5. Open the file in your preferred text editor and add the following code:
+  ```typescript
+  import { dbConnection } from '../config/database';
+  import bcrypt from 'bcryptjs';
+
+  interface User {
+    id?: number;
+    username: string;
+    email: string;
+    password: string;
+    created_at?: Date;
+  }
+
+  export const UserModel = {
+    // Find user by email
+    findByEmail: (email: string): Promise<User | null> => {
+     return new Promise((resolve, reject) => {
+      dbConnection.query(
+        'SELECT * FROM users WHERE email = ?',
+        [email],
+        (err, results: any) => {
+         if (err) return reject(err);
+         if (results.length === 0) return resolve(null);
+         return resolve(results[0]);
+        }
+      );
+     });
+    },
+
+    // Find user by username
+    findByUsername: (username: string): Promise<User | null> => {
+     return new Promise((resolve, reject) => {
+      dbConnection.query(
+        'SELECT * FROM users WHERE username = ?',
+        [username],
+        (err, results: any) => {
+         if (err) return reject(err);
+         if (results.length === 0) return resolve(null);
+         return resolve(results[0]);
+        }
+      );
+     });
+    },
+
+    // Create new user
+    create: async (userData: User): Promise<User> => {
+     // Hash password
+     const salt = await bcrypt.genSalt(10);
+     const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+     return new Promise((resolve, reject) => {
+      dbConnection.query(
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        [userData.username, userData.email, hashedPassword],
+        (err, result: any) => {
+         if (err) return reject(err);
+         
+         // Return created user (without password)
+         const newUser = {
+          id: result.insertId,
+          username: userData.username,
+          email: userData.email,
+          password: '',
+          created_at: new Date()
+         };
+         
+         return resolve(newUser);
+        }
+      );
+     });
+    }
+  };
+  ```
 
 ## 3. Authentication Middleware
 
@@ -993,12 +1097,15 @@ What is a JWT secret?[^2]
 5. Try logging out and logging back in
 6. Try accessing the dashboard directly without logging in - you should be redirected to login
 
+[^1]:
+Example text
+
+[^2]: https://www.digitalcitizen.life/command-prompt-how-use-basic-commands/
 
 
-[^1]: https://www.digitalcitizen.life/command-prompt-how-use-basic-commands/
-
-
-[^2]: The JWT_SECRET is only needed in your server-side code via this .env file You do NOT need to configure it in phpMyAdmin or your database
+[^3]: The JWT_SECRET is only needed in your server-side code via this .env file You do NOT need to configure it in phpMyAdmin or your database
 This secret is used exclusively by your backend code to sign and verify authentication tokens
 Make sure to use a strong, random string for better security
 Never expose this secret in client-side code or commit it to public repositories
+
+[^4]:
