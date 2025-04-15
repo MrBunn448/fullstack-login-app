@@ -1020,16 +1020,24 @@ echo. > Register.tsx
    export default Register;
    ```
 
+#!TODO
+---
 ## 10. Frontend Dashboard Component
 
 **Step 10.1: Create dashboard component**
-navigate to frontend directory
+
+navigate to right directory
 ```cmd
 cd frontend
 ``` 
-1. Create a directory: `src/components/dashboard`
+create the components directory
 ```cmd
-mkdir src\components\dashboard
+mkdir src\components
+```
+
+1. Create a directory: `dashboard`
+```cmd
+mkdir dashboard
 ```
 2. Inside that directory, create a file named `Dashboard.tsx`
 3. Add the following code:
