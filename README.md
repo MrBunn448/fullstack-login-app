@@ -432,41 +432,43 @@ echo. > middleware\authMiddleware.ts
 ``` 
 
 4. Add the following code: 
-   ```typescript
-   import { Request, Response, NextFunction } from 'express';
-   import jwt from 'jsonwebtoken';
-   import dotenv from 'dotenv';
+```typescript
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-   dotenv.config();
+dotenv.config();
 
-   interface AuthRequest extends Request {
-     user?: any;
-   }
+interface AuthRequest extends Request {
+  user?: any;
+}
 
-   export const authenticateToken = (
-     req: AuthRequest,
-     res: Response,
-     next: NextFunction
-   ) => {
-     // Get token from header
-     const authHeader = req.headers['authorization'];
-     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-     
-     if (!token) {
-       return res.status(401).json({ message: 'Access denied. No token provided.' });
-     }
+export const authenticateToken = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  // Get token from header
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (!token) {
+    res.status(401).json({ message: 'Access denied. No token provided.' });
+    return;
+  }
 
-     try {
-       // Verify token
-       const secret = process.env.JWT_SECRET || 'fallback_secret';
-       const decoded = jwt.verify(token, secret);
-       req.user = decoded;
-       next();
-     } catch (error) {
-       return res.status(403).json({ message: 'Invalid token' });
-     }
-   };
-   ```
+  try {
+    // Verify token
+    const secret = process.env.JWT_SECRET || 'fallback_secret';
+    const decoded = jwt.verify(token, secret);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(403).json({ message: 'Invalid token' });
+    return;
+  }
+};
+```
 
 ## 4. Authentication Controllers
 
@@ -485,113 +487,120 @@ mkdir controllers
 echo. > controllers\authController.ts
 ```
 4. Add the following code:
-   ```typescript
+```typescript
    import { Request, Response } from 'express';
-   import bcrypt from 'bcryptjs';
-   import jwt from 'jsonwebtoken';
-   import { UserModel } from '../models/userModel';
-   import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { UserModel } from '../models/userModel';
+import dotenv from 'dotenv';
 
-   dotenv.config();
+dotenv.config();
 
-   export const AuthController = {
-     // Register a new user
-     register: async (req: Request, res: Response) => {
-       try {
-         const { username, email, password } = req.body;
+export const AuthController = {
+  // Register a new user
+  register: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { username, email, password } = req.body;
 
-         // Validate input
-         if (!username || !email || !password) {
-           return res.status(400).json({ message: 'All fields are required' });
-         }
+      // Validate input
+      if (!username || !email || !password) {
+        res.status(400).json({ message: 'All fields are required' });
+        return;
+      }
 
-         // Check if user already exists
-         const existingEmail = await UserModel.findByEmail(email);
-         if (existingEmail) {
-           return res.status(400).json({ message: 'Email already in use' });
-         }
+      // Check if user already exists
+      const existingEmail = await UserModel.findByEmail(email);
+      if (existingEmail) {
+        res.status(400).json({ message: 'Email already in use' });
+        return;
+      }
 
-         const existingUsername = await UserModel.findByUsername(username);
-         if (existingUsername) {
-           return res.status(400).json({ message: 'Username already taken' });
-         }
+      const existingUsername = await UserModel.findByUsername(username);
+      if (existingUsername) {
+        res.status(400).json({ message: 'Username already taken' });
+        return;
+      }
 
-         // Create user
-         const newUser = await UserModel.create({ username, email, password });
+      // Create user
+      const newUser = await UserModel.create({ username, email, password });
 
-         // Generate JWT
-         const token = jwt.sign(
-           { id: newUser.id, username: newUser.username },
-           process.env.JWT_SECRET || 'fallback_secret',
-           { expiresIn: '1h' }
-         );
+      // Generate JWT
+      const token = jwt.sign(
+        { id: newUser.id, username: newUser.username },
+        process.env.JWT_SECRET || 'fallback_secret',
+        { expiresIn: '1h' }
+      );
 
-         res.status(201).json({ token, user: { id: newUser.id, username, email } });
-       } catch (error) {
-         console.error('Registration error:', error);
-         res.status(500).json({ message: 'Server error during registration' });
-       }
-     },
+      res.status(201).json({ token, user: { id: newUser.id, username, email } });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ message: 'Server error during registration' });
+    }
+  },
 
-     // Login user
-     login: async (req: Request, res: Response) => {
-       try {
-         const { email, password } = req.body;
+  // Login user
+  login: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { email, password } = req.body;
 
-         // Validate input
-         if (!email || !password) {
-           return res.status(400).json({ message: 'All fields are required' });
-         }
+      // Validate input
+      if (!email || !password) {
+        res.status(400).json({ message: 'All fields are required' });
+        return;
+      }
 
-         // Find user by email
-         const user = await UserModel.findByEmail(email);
-         if (!user) {
-           return res.status(400).json({ message: 'Invalid credentials' });
-         }
+      // Find user by email
+      const user = await UserModel.findByEmail(email);
+      if (!user) {
+        res.status(400).json({ message: 'Invalid credentials' });
+        return;
+      }
 
-         // Compare passwords
-         const isMatch = await bcrypt.compare(password, user.password);
-         if (!isMatch) {
-           return res.status(400).json({ message: 'Invalid credentials' });
-         }
+      // Compare passwords
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        res.status(400).json({ message: 'Invalid credentials' });
+        return;
+      }
 
-         // Generate JWT
-         const token = jwt.sign(
-           { id: user.id, username: user.username },
-           process.env.JWT_SECRET || 'fallback_secret',
-           { expiresIn: '1h' }
-         );
+      // Generate JWT
+      const token = jwt.sign(
+        { id: user.id, username: user.username },
+        process.env.JWT_SECRET || 'fallback_secret',
+        { expiresIn: '1h' }
+      );
 
-         res.json({
-           token,
-           user: { id: user.id, username: user.username, email: user.email }
-         });
-       } catch (error) {
-         console.error('Login error:', error);
-         res.status(500).json({ message: 'Server error during login' });
-       }
-     },
+      res.json({
+        token,
+        user: { id: user.id, username: user.username, email: user.email }
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Server error during login' });
+    }
+  },
 
-     // Get current user profile
-     getProfile: async (req: Request, res: Response) => {
-       try {
-         // Use req.user from middleware
-         const user = await UserModel.findByEmail((req as any).user.email);
-         
-         if (!user) {
-           return res.status(404).json({ message: 'User not found' });
-         }
-         
-         // Return user without password
-         const { password, ...userWithoutPassword } = user;
-         res.json(userWithoutPassword);
-       } catch (error) {
-         console.error('Profile error:', error);
-         res.status(500).json({ message: 'Server error retrieving profile' });
-       }
-     }
-   };
-   ```
+  // Get current user profile
+  getProfile: async (req: Request, res: Response): Promise<void> => {
+    try {
+      // Use req.user from middleware
+      const user = await UserModel.findByEmail((req as any).user.email);
+      
+      if (!user) {
+        res.status(404).json({ message: 'User not found' });
+        return;
+      }
+      
+      // Return user without password
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error('Profile error:', error);
+      res.status(500).json({ message: 'Server error retrieving profile' });
+    }
+  }
+};
+```
 #TODO
 ## 5. Authentication Routes
 
@@ -609,24 +618,24 @@ echo. > routes\authRoutes.ts
 ```
 
 3. Add the following code:
-   ```typescript
+```typescript
    import express from 'express';
-   import { AuthController } from '../controllers/authController';
-   import { authenticateToken } from '../middleware/authMiddleware';
+import { AuthController } from '../controllers/authController';
+import { authenticateToken } from '../middleware/authMiddleware';
 
-   const router = express.Router();
+const router = express.Router();
 
-   // Register route
-   router.post('/register', AuthController.register);
+// Register route
+router.post('/register', AuthController.register);
 
-   // Login route
-   router.post('/login', AuthController.login);
+// Login route
+router.post('/login', AuthController.login);
 
-   // Get user profile - protected route
-   router.get('/profile', authenticateToken, AuthController.getProfile);
+// Get user profile - protected route
+router.get('/profile', authenticateToken, AuthController.getProfile);
 
-   export default router;
-   ```
+export default router;
+```
 
 ## 6. Express Server Configuration
 
@@ -637,42 +646,43 @@ echo. > server.ts
 ```
 
 2. Add the following code:
-   ```typescript
-   import express from 'express';
-   import cors from 'cors';
-   import dotenv from 'dotenv';
-   import authRoutes from './routes/authRoutes';
-   import { dbConnection } from './config/database';
+```typescript
+import express from 'express';
+import cors from 'cors'; 
+//npm i --save-dev @types/cors
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes';
+import { dbConnection } from './config/database';
 
-   // Load environment variables
-   dotenv.config();
+// Load environment variables
+dotenv.config();
 
-   const app = express();
-   const PORT = process.env.PORT || 5000;
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-   // Middleware
-   app.use(cors());
-   app.use(express.json());
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-   // Database Connection
-   dbConnection.connect((err) => {
-     if (err) {
-       console.error('Error connecting to the database:', err);
-       process.exit(1);
-     }
-     console.log('Successfully connected to MySQL database');
-   });
+// Database Connection
+dbConnection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    process.exit(1);
+  }
+  console.log('Successfully connected to MySQL database');
+});
 
-   // Routes
-   app.use('/api/auth', authRoutes);
+// Routes
+app.use('/api/auth', authRoutes);
 
-   // Start server
-   app.listen(PORT, () => {
-     console.log(`Server running on port ${PORT}`);
-   });
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-   export default app;
-   ```
+export default app;
+```
 
 **Step 6.2: Configure package.json for running the server**
 1. Open the `package.json` file in your backend directory
@@ -703,77 +713,77 @@ echo. > src\services\authService.ts
 ```
 
 4. Add the following code:
-   ```typescript
-   import axios from 'axios';
-   //run this command in the terminal to install axios: npm install axios
+```typescript
+import axios from 'axios';
+//run `npm install axios` to install axios
 
-   const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'http://localhost:5000/api/auth';
 
-   // Register user
-   export const register = async (username: string, email: string, password: string) => {
-     try {
-       const response = await axios.post(`${API_URL}/register`, {
-         username,
-         email,
-         password
-       });
-       
-       if (response.data.token) {
-         localStorage.setItem('user', JSON.stringify(response.data));
-       }
-       
-       return response.data;
-     } catch (error) {
-       if (axios.isAxiosError(error) && error.response) {
-         throw new Error(error.response.data.message);
-       }
-       throw new Error('Registration failed');
-     }
-   };
+// Register user
+export const register = async (username: string, email: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/register`, {
+      username,
+      email,
+      password
+    });
+    
+    if (response.data.token) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+    
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Registration failed');
+  }
+};
 
-   // Login user
-   export const login = async (email: string, password: string) => {
-     try {
-       const response = await axios.post(`${API_URL}/login`, {
-         email,
-         password
-       });
-       
-       if (response.data.token) {
-         localStorage.setItem('user', JSON.stringify(response.data));
-       }
-       
-       return response.data;
-     } catch (error) {
-       if (axios.isAxiosError(error) && error.response) {
-         throw new Error(error.response.data.message);
-       }
-       throw new Error('Login failed');
-     }
-   };
+// Login user
+export const login = async (email: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/login`, {
+      email,
+      password
+    });
+    
+    if (response.data.token) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+    
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Login failed');
+  }
+};
 
-   // Logout user
-   export const logout = () => {
-     localStorage.removeItem('user');
-   };
+// Logout user
+export const logout = () => {
+  localStorage.removeItem('user');
+};
 
-   // Get current user
-   export const getCurrentUser = () => {
-     const userJson = localStorage.getItem('user');
-     if (!userJson) return null;
-     return JSON.parse(userJson);
-   };
+// Get current user
+export const getCurrentUser = () => {
+  const userJson = localStorage.getItem('user');
+  if (!userJson) return null;
+  return JSON.parse(userJson);
+};
 
-   // Set auth header
-   export const authHeader = () => {
-     const user = getCurrentUser();
-     if (user && user.token) {
-       return { Authorization: `Bearer ${user.token}` };
-     }
-     return {};
-   };
+// Set auth header
+export const authHeader = () => {
+  const user = getCurrentUser();
+  if (user && user.token) {
+    return { Authorization: `Bearer ${user.token}` };
+  }
+  return {};
+};
    ```
-
+#TODO
 ## 8. Frontend Login Component
 
 **Step 8.1: Create login component**
