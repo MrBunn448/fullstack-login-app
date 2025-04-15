@@ -8,24 +8,27 @@ dotenv.config();
 
 export const AuthController = {
   // Register a new user
-  register: async (req: Request, res: Response) => {
+  register: async (req: Request, res: Response): Promise<void> => {
     try {
       const { username, email, password } = req.body;
 
       // Validate input
       if (!username || !email || !password) {
-        return res.status(400).json({ message: 'All fields are required' });
+        res.status(400).json({ message: 'All fields are required' });
+        return;
       }
 
       // Check if user already exists
       const existingEmail = await UserModel.findByEmail(email);
       if (existingEmail) {
-        return res.status(400).json({ message: 'Email already in use' });
+        res.status(400).json({ message: 'Email already in use' });
+        return;
       }
 
       const existingUsername = await UserModel.findByUsername(username);
       if (existingUsername) {
-        return res.status(400).json({ message: 'Username already taken' });
+        res.status(400).json({ message: 'Username already taken' });
+        return;
       }
 
       // Create user
@@ -46,25 +49,28 @@ export const AuthController = {
   },
 
   // Login user
-  login: async (req: Request, res: Response) => {
+  login: async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
 
       // Validate input
       if (!email || !password) {
-        return res.status(400).json({ message: 'All fields are required' });
+        res.status(400).json({ message: 'All fields are required' });
+        return;
       }
 
       // Find user by email
       const user = await UserModel.findByEmail(email);
       if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+        res.status(400).json({ message: 'Invalid credentials' });
+        return;
       }
 
       // Compare passwords
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+        res.status(400).json({ message: 'Invalid credentials' });
+        return;
       }
 
       // Generate JWT
@@ -85,13 +91,14 @@ export const AuthController = {
   },
 
   // Get current user profile
-  getProfile: async (req: Request, res: Response) => {
+  getProfile: async (req: Request, res: Response): Promise<void> => {
     try {
       // Use req.user from middleware
       const user = await UserModel.findByEmail((req as any).user.email);
       
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        res.status(404).json({ message: 'User not found' });
+        return;
       }
       
       // Return user without password
