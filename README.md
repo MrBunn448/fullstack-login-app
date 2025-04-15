@@ -601,7 +601,7 @@ export const AuthController = {
   }
 };
 ```
-#TODO
+
 ## 5. Authentication Routes
 
 1. Ensure you're in the backend/src directory: 
@@ -787,8 +787,20 @@ export const authHeader = () => {
 ## 8. Frontend Login Component
 
 **Step 8.1: Create login component**
-1. Create a directory: `src/components/auth`
-2. Inside that directory, create a file named `Login.tsx`
+1. Navigate to your frontend directory
+```cmd
+cd frontend
+```
+
+2. Create a directory: `src/components/auth`
+```cmd
+mkdir src\components\auth
+```
+
+3. Inside that directory, create a file named `Login.tsx`
+```cmd
+echo. > src\components\auth\Login.tsx
+```
 3. Add the following code:
    ```typescript
    import React, { useState } from 'react';
