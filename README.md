@@ -11,7 +11,7 @@ Look for the following icon if you want a detailed explaination of the current t
 - **WAMP Server** - Windows, Apache, MySQL, and PHP stack
 - **bcryptjs** - Password hashing library
 - **jsonwebtoken (JWT)** - Authentication token implementation
-- **cors** - Cross-Origin Resource Sharing middleware
+- **cors ** - Cross-Origin Resource Sharing middleware
 - **dotenv** - Environment variable management
 
 ### Frontend
@@ -39,8 +39,18 @@ Let's start with the project setup:
 
 ## Prerequisites
 - Node.js (v16 or later)
+
+  To install Node.js go to the offcial website and run the installer:
+  https://nodejs.org/en
 - npm (v8 or later)
+
+ To install npm run the following command in cmd
+  
+  ```cmd
+  npm install -g npm@latest
+  ``` 
 - MySQL installed and running
+(This is included with WAMP, see following step)
 
 ## Detailed Step-by-Step Setup
 
@@ -403,15 +413,25 @@ If you want to use PowerShell, you can look up the respective commands
   };
   ```
 
-#TODO
-
-
 ## 3. Authentication Middleware
 
 **Step 3.1: Create auth middleware**
-1. Create a directory: `src/middleware`
-2. Inside that directory, create a file named `authMiddleware.ts`
-3. Add the following code:
+1. Navigate to the backend directory
+  ```cmd
+  cd backend/src
+  ```
+  
+2. Create a directory: `middleware`
+```cmd
+mkdir middleware
+```
+
+3. Inside that directory, create a file named `authMiddleware.ts`
+```cmd
+echo. > middleware\authMiddleware.ts
+``` 
+
+4. Add the following code: 
    ```typescript
    import { Request, Response, NextFunction } from 'express';
    import jwt from 'jsonwebtoken';
@@ -451,9 +471,20 @@ If you want to use PowerShell, you can look up the respective commands
 ## 4. Authentication Controllers
 
 **Step 4.1: Create auth controller**
-1. Create a directory: `src/controllers`
-2. Inside that directory, create a file named `authController.ts`
-3. Add the following code:
+
+1. Ensure you're in the backend/src directory: 
+```cmd
+cd backend/src
+```
+2. Create a directory: `controllers`
+```cmd
+mkdir controllers
+```
+3. Inside that directory, create a file named `authController.ts`
+```cmd
+echo. > controllers\authController.ts
+```
+4. Add the following code:
    ```typescript
    import { Request, Response } from 'express';
    import bcrypt from 'bcryptjs';
@@ -561,12 +592,22 @@ If you want to use PowerShell, you can look up the respective commands
      }
    };
    ```
-
+#TODO
 ## 5. Authentication Routes
 
-**Step 5.1: Create auth routes**
-1. Create a directory: `src/routes`
-2. Inside that directory, create a file named `authRoutes.ts`
+1. Ensure you're in the backend/src directory: 
+```cmd
+cd backend/src
+```
+2. Create a directory: `src/routes`
+```cmd
+mkdir routes
+``` 
+3. Inside that directory, create a file named `authRoutes.ts`
+```cmd
+echo. > routes\authRoutes.ts
+```
+
 3. Add the following code:
    ```typescript
    import express from 'express';
@@ -591,6 +632,10 @@ If you want to use PowerShell, you can look up the respective commands
 
 **Step 6.1: Create main server file**
 1. In the `src` directory, create a file named `server.ts`
+```cmd
+echo. > server.ts
+```
+
 2. Add the following code:
    ```typescript
    import express from 'express';
@@ -644,11 +689,23 @@ If you want to use PowerShell, you can look up the respective commands
 
 **Step 7.1: Create auth service**
 1. Navigate to your frontend directory
+```cmd
+cd frontend
+```
 2. Create a directory: `src/services`
+```cmd
+mkdir src\services
+```
+
 3. Inside that directory, create a file named `authService.ts`
+```cmd
+echo. > src\services\authService.ts
+```
+
 4. Add the following code:
    ```typescript
    import axios from 'axios';
+   //run this command in the terminal to install axios: npm install axios
 
    const API_URL = 'http://localhost:5000/api/auth';
 
