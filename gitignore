@@ -1,0 +1,63 @@
+# Dependencies
+# Ignore Node.js dependency directory and package manager files
+# These are installed from package.json and should not be committed
+node_modules/
+/.pnp
+.pnp.js
+
+# Environment variables
+# Ignore environment configuration files which often contain sensitive information
+# like API keys, database credentials, and other secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+# Ignore compiled code, build artifacts and test coverage reports
+# These are generated from source files and should not be committed
+/dist
+/build
+/coverage
+
+# Logs
+# Ignore all log files generated during development and runtime
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/IDE specific files
+# Ignore configuration files from various editors and IDEs
+# These are user-specific and not relevant to the project itself
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+# Ignore operating system metadata files
+# These are created automatically and aren't part of the project
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# TypeScript cache
+# Ignore TypeScript incremental compilation cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+# Ignore npm's cache for faster installations
+.npm
+
+# MySQL data dumps
+# Ignore database backups and dumps which may contain sensitive data
+# and are often large binary files not suitable for version control
+*.sql
+*.dump

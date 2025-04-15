@@ -783,116 +783,126 @@ export const authHeader = () => {
   return {};
 };
    ```
-#TODO
+
 ## 8. Frontend Login Component
 
 **Step 8.1: Create login component**
 1. Navigate to your frontend directory
 ```cmd
-cd frontend
+cd frontend/src/components
 ```
 
-2. Create a directory: `src/components/auth`
+2. Create the auth directory:
 ```cmd
-mkdir src\components\auth
+mkdir auth
 ```
 
 3. Inside that directory, create a file named `Login.tsx`
 ```cmd
+cd auth
 echo. > src\components\auth\Login.tsx
 ```
 3. Add the following code:
-   ```typescript
-   import React, { useState } from 'react';
-   import { Form, Button, Alert, Container, Row, Col, Card } from 'react-bootstrap';
-   import { login } from '../../services/authService';
-   import { useNavigate } from 'react-router-dom';
+```typescript
+import React, { useState } from 'react';
+//npm install react @types/react
+import { Form, Button, Alert, Container, Row, Col, Card } from 'react-bootstrap';
+//npm install react-bootstrap bootstrap @types/react-bootstrap
+import { login } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
-   const Login: React.FC = () => {
-     const [email, setEmail] = useState('');
-     const [password, setPassword] = useState('');
-     const [loading, setLoading] = useState(false);
-     const [error, setError] = useState('');
-     const navigate = useNavigate();
+const Login: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-     const handleLogin = async (e: React.FormEvent) => {
-       e.preventDefault();
-       setError('');
-       
-       if (!email || !password) {
-         setError('All fields are required');
-         return;
-       }
-       
-       try {
-         setLoading(true);
-         await login(email, password);
-         navigate('/dashboard');
-       } catch (err) {
-         setError(err instanceof Error ? err.message : 'Login failed');
-       } finally {
-         setLoading(false);
-       }
-     };
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!email || !password) {
+      setError('All fields are required');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-     return (
-       <Container>
-         <Row className="justify-content-md-center mt-5">
-           <Col md={6}>
-             <Card>
-               <Card.Header as="h5">Login</Card.Header>
-               <Card.Body>
-                 {error && <Alert variant="danger">{error}</Alert>}
-                 <Form onSubmit={handleLogin}>
-                   <Form.Group className="mb-3">
-                     <Form.Label>Email address</Form.Label>
-                     <Form.Control 
-                       type="email" 
-                       value={email}
-                       onChange={(e) => setEmail(e.target.value)}
-                       placeholder="Enter email" 
-                       required
-                     />
-                   </Form.Group>
+  return (
+    <Container>
+      <Row className="justify-content-md-center mt-5">
+        <Col md={6}>
+          <Card>
+            <Card.Header as="h5">Login</Card.Header>
+            <Card.Body>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleLogin}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email" 
+                    required
+                  />
+                </Form.Group>
 
-                   <Form.Group className="mb-3">
-                     <Form.Label>Password</Form.Label>
-                     <Form.Control 
-                       type="password" 
-                       value={password}
-                       onChange={(e) => setPassword(e.target.value)}
-                       placeholder="Password" 
-                       required
-                     />
-                   </Form.Group>
-                   
-                   <Button 
-                     variant="primary" 
-                     type="submit" 
-                     disabled={loading}
-                     className="w-100"
-                   >
-                     {loading ? 'Logging in...' : 'Login'}
-                   </Button>
-                 </Form>
-               </Card.Body>
-               <Card.Footer className="text-center">
-                 Don't have an account? <a href="/register">Register</a>
-               </Card.Footer>
-             </Card>
-           </Col>
-         </Row>
-       </Container>
-     );
-   };
+                <Form.Group className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password" 
+                    required
+                  />
+                </Form.Group>
+                
+                <Button 
+                  variant="primary" 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-100"
+                >
+                  {loading ? 'Logging in...' : 'Login'}
+                </Button>
+              </Form>
+            </Card.Body>
+            <Card.Footer className="text-center">
+              Don't have an account? <a href="/register">Register</a>
+            </Card.Footer>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
-   export default Login;
-   ```
+export default Login;
+```
 
 ## 9. Frontend Register Component
 
 **Step 9.1: Create register component**
-1. Inside the `src/components/auth` directory, create a file named `Register.tsx`
+1. Navigate to the right directory
+```cmd
+cd frontend/src/components/auth
+```
+2. create a file named `Register.tsx`
+```cmd
+echo. > Register.tsx
+```
 2. Add the following code:
    ```typescript
    import React, { useState } from 'react';
@@ -1013,7 +1023,14 @@ echo. > src\components\auth\Login.tsx
 ## 10. Frontend Dashboard Component
 
 **Step 10.1: Create dashboard component**
+navigate to frontend directory
+```cmd
+cd frontend
+``` 
 1. Create a directory: `src/components/dashboard`
+```cmd
+mkdir src\components\dashboard
+```
 2. Inside that directory, create a file named `Dashboard.tsx`
 3. Add the following code:
    ```typescript
