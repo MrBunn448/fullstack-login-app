@@ -1,5 +1,7 @@
-This is a comprehensive guide to setting up a full-stack login/register application. This is a complete beginner guide and all the stepts are explained in detail.
-Look for the following icon if you want a detailed explaination of the current topic "[^1]"
+
+# Full-Stack React + Express Login/Register Application Setup
+
+Welcome to this comprehensive guide on setting up a full-stack login/register application using React, Express, and MySQL. This guide is designed for beginners and covers every step in detail. Whether you're new to full-stack development or looking to enhance your skills, this tutorial will help you build a robust authentication system from scratch.
 
 ## Technologies Used in This Project
 
@@ -11,7 +13,7 @@ Look for the following icon if you want a detailed explaination of the current t
 - **WAMP Server** - Windows, Apache, MySQL, and PHP stack
 - **bcryptjs** - Password hashing library
 - **jsonwebtoken (JWT)** - Authentication token implementation
-- **cors ** - Cross-Origin Resource Sharing middleware
+- **cors** - Cross-Origin Resource Sharing middleware
 - **dotenv** - Environment variable management
 
 ### Frontend
@@ -28,39 +30,35 @@ Look for the following icon if you want a detailed explaination of the current t
 
 ---
 
-*NOTE*: this guide is for Windows. Commands will not work on Linux or Mac
-
+*NOTE*: This guide is for Windows. Commands will not work on Linux or Mac.
 
 ---
 
 Let's start with the project setup:
 
-
-# Full-Stack React + Express Login/Register Application Setup
-
 ## Prerequisites
 - Node.js (v16 or later)
 
-  To install Node.js go to the offcial website and run the installer:
+  To install Node.js, go to the official website and run the installer:
   https://nodejs.org/en
 - npm (v8 or later)
 
- To install npm run the following command in cmd
-  
+  To install npm, run the following command in cmd:
+
   ```cmd
   npm install -g npm@latest
-  ``` 
+  ```
 - MySQL installed and running
-(This is included with WAMP, see following step)
+  (This is included with WAMP, see the following step)
 
 ## Detailed Step-by-Step Setup
 
-### Set up wamp server
-Go to: https://wampserver.aviatechno.net/?lang=en= 
-And scroll all the way down to the page where it says: 
-All VC Redistributable Packages (x86_x64) (32 & 64bits) MD5 
-![Image of file location on the website](image.png)
+### Set up WAMP Server
+Go to: https://wampserver.aviatechno.net/?lang=en
 
+And scroll all the way down to the page where it says:
+All VC Redistributable Packages (x86_x64) (32 & 64bits) MD5
+![Image of file location on the website](image.png)
 
 ### 1. Create Project Directory and Initialize
 ```bash
@@ -72,12 +70,12 @@ cd fullstack-login-app
 mkdir frontend backend
 ```
 
-### 2. Backend Setup (Express + TypeScript + MySQL)
+### 2. Backend Setup
 ```bash
-# Navigate to backend directory
+# Navigate to the backend directory
 cd backend
 
-# Initialize npm project
+# Initialize the npm project
 npm init -y
 
 # Install core dependencies
@@ -90,24 +88,24 @@ npm install -D typescript @types/express @types/node @types/bcryptjs @types/json
 npx tsc --init
 ```
 
-### 3. Frontend Setup (React + TypeScript + React Bootstrap)
-
-###  !TODO ,double check this is right!
+### 3. Frontend Setup
 
 ```bash
-# Navigate back to project root
+# Navigate back to the project root
 cd ..
 
-# Create React app with TypeScript template
+# Create a React app with the TypeScript template
 npx create-react-app frontend --template typescript
 
-# Navigate to frontend
+# Navigate to the frontend
 cd frontend
 
 # Install additional dependencies
 npm install react-bootstrap bootstrap axios react-router-dom
-Next you want to define a better folder structure.
-You can do this manually or just run the following command with powershell:
+```
+
+Next, you want to define a better folder structure. You can do this manually or just run the following command with PowerShell:
+
 ```powershell
 # For backend
 cd backend
@@ -118,24 +116,22 @@ cd ..\frontend
 mkdir src\components, src\pages, src\services
 ```
 
-
 ### 4. Database Preparation
-For the next part I recommend just using WAMP to have phpmadmin installed/running.
+For the next part, I recommend just using WAMP to have phpMyAdmin installed/running.
 
-Open WAMP and go to localhost/phpmyadmin
+Open WAMP and go to `localhost/phpmyadmin`.
 
-Create the database and table manually using the GUI.
-
-Or navigate to the SQL tab and run the following commands:
+Create the database and table manually using the GUI, or navigate to the SQL tab and run the following commands:
 
 ```sql
-# Create database
+# Create the database
 CREATE DATABASE login_app_db;
 ```
+
 Then navigate to the database you just created and run the following command:
 
 ```sql
-# Create users table
+# Create the users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -146,9 +142,9 @@ CREATE TABLE users (
 ```
 
 ### Recommended Project Structure
-(This example is simplified and is not 100% accurate) 
+(This example is simplified and is not 100% accurate)
 
-This is what the sturcture of your project should look like:
+This is what the structure of your project should look like:
 ```
 fullstack-login-app/
 │
@@ -176,93 +172,88 @@ fullstack-login-app/
 
 #### Separation of Concerns
 
-Dividing backend and frontend into separate directories creates a clear separation, making it easier to understand the codebase
-Each part can be developed and deployed independently if needed
-
+Dividing the backend and frontend into separate directories creates a clear separation, making it easier to understand the codebase. Each part can be developed and deployed independently if needed.
 
 #### Modularity and Maintenance
 
-controllers: Handle request processing and response generation
-routes: Define API endpoints and connect them to controllers
-models: Manage data structure and database interactions
-middleware: Handle cross-cutting concerns like authentication
-This organized structure makes the code more maintainable as it grows
+- **controllers**: Handle request processing and response generation.
+- **routes**: Define API endpoints and connect them to controllers.
+- **models**: Manage data structure and database interactions.
+- **middleware**: Handle cross-cutting concerns like authentication.
 
+This organized structure makes the code more maintainable as it grows.
 
 #### Industry Standard
 
-This structure follows conventions used in many professional Node.js/Express applications
-Makes it easier for other developers to understand your codebase
-
-
+This structure follows conventions used in many professional Node.js/Express applications. It makes it easier for other developers to understand your codebase.
 
 ## Step-by-Step Implementation Guide for Authentication System
 
 ## 1. Database Connection Setup
 
-### Step 1.1: Create environment file 
+### Step 1.1: Create Environment File
 
+#### 1. Navigate to the Right Directory
 
-####  1. Navigate to the right directory
+Make sure you are in the project root directory. How you do this depends on where you are currently in the command line.
 
-Make sure you are in the project root directory
-How you do this depends on where you are currently in the command line. 
-
-How do I navigate in the terminal?[^2]
+*How do I navigate in the terminal?* [^2]
 
 Then navigate to the backend directory:
 ```cmd
 cd backend
 ```
 
- ####  2. Create a new file using CMD
+#### 2. Create a New File Using CMD
 ```cmd
 echo. > .env
 ```
-####  Or using powershell:
+
+#### Or Using PowerShell:
 ```powershell
 New-Item -Path .env -ItemType File -Force
 ```
-####  3. Add JWT Secret to Environment File
 
-In the .env file, add the following content:
+#### 3. Add JWT Secret to Environment File
+
+In the `.env` file, add the following content:
 
 ```
-PORT=5000 
+PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=login_app_db
 JWT_SECRET=your_super_secure_jwt_secret
 ```
-What is a JWT secret?[^3]
 
-4. Replace `your_password_here` with your actual MySQL password
-   you can leave it empty if (you don't have a password set for the root user)
-5. Replace `your_super_secure_jwt_secret` with a strong random string (at least 32 characters)
+*What is a JWT secret?* [^3]
 
-### **Step 1.2: Create database configuration file**
-*NOTE:* For this part there will be a step by step guide for both CMD and PowerShell
-But for the rest of the project, I will only provide the CMD commands
-If you want to use PowerShell, you can look up the respective commands
+4. Replace `your_password_here` with your actual MySQL password. You can leave it empty if you don't have a password set for the root user.
+5. Replace `your_super_secure_jwt_secret` with a strong random string (at least 32 characters).
+
+### **Step 1.2: Create Database Configuration File**
+
+*NOTE*: For this part, there will be a step-by-step guide for both CMD and PowerShell. But for the rest of the project, I will only provide the CMD commands. If you want to use PowerShell, you can look up the respective commands.
+
 #### Option 1: Using Command Prompt (CMD)
 
-1. Navigate to the backend directory
+1. Navigate to the backend directory:
   ```cmd
   cd backend
   ```
 
-2. Create the config directory
+2. Create the config directory:
   ```cmd
   mkdir src\config
   ```
 
-3. Navigate to the config directory
+3. Navigate to the config directory:
   ```cmd
   cd src\config
   ```
 
-4. Create the database.ts file
+4. Create the `database.ts` file:
   ```cmd
   echo. > database.ts
   ```
@@ -286,17 +277,17 @@ If you want to use PowerShell, you can look up the respective commands
 
 #### Option 2: Using PowerShell
 
-1. Navigate to the backend directory
+1. Navigate to the backend directory:
   ```powershell
   cd backend
   ```
 
-2. Create the config directory
+2. Create the config directory:
   ```powershell
   New-Item -Path "src\config" -ItemType Directory -Force
   ```
 
-3. Create the database.ts file directly
+3. Create the `database.ts` file directly:
   ```powershell
   New-Item -Path "src\config\database.ts" -ItemType File -Force
   ```
@@ -320,24 +311,24 @@ If you want to use PowerShell, you can look up the respective commands
 
 ## 2. User Model Creation
 
-**Step 2.1: Create user model**
+**Step 2.1: Create User Model**
 
-1. Navigate to the backend directory
+1. Navigate to the backend directory:
   ```cmd
   cd backend
   ```
 
-2. Create models directory (if it doesn't exist)
+2. Create the models directory (if it doesn't exist):
   ```cmd
   mkdir src\models
-  ``` 
+  ```
 
-3. Navigate to the models directory
+3. Navigate to the models directory:
   ```cmd
   cd src\models
   ```
 
-4. Create the user model file
+4. Create the user model file:
   ```cmd
   echo. > userModel.ts
   ```
@@ -398,7 +389,7 @@ If you want to use PowerShell, you can look up the respective commands
         [userData.username, userData.email, hashedPassword],
         (err, result: any) => {
          if (err) return reject(err);
-         
+
          // Return created user (without password)
          const newUser = {
           id: result.insertId,
@@ -407,7 +398,7 @@ If you want to use PowerShell, you can look up the respective commands
           password: '',
           created_at: new Date()
          };
-         
+
          return resolve(newUser);
         }
       );
@@ -418,23 +409,23 @@ If you want to use PowerShell, you can look up the respective commands
 
 ## 3. Authentication Middleware
 
-**Step 3.1: Create auth middleware**
-1. Navigate to the backend directory
+**Step 3.1: Create Auth Middleware**
+1. Navigate to the backend directory:
   ```cmd
   cd backend/src
   ```
-  
+
 2. Create a directory: `middleware`
 ```cmd
 mkdir middleware
 ```
 
-3. Inside that directory, create a file named `authMiddleware.ts`
+3. Inside that directory, create a file named `authMiddleware.ts`:
 ```cmd
 echo. > middleware\authMiddleware.ts
-``` 
+```
 
-4. Add the following code: 
+4. Add the following code:
 ```typescript
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -454,7 +445,7 @@ export const authenticateToken = (
   // Get token from header
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-  
+
   if (!token) {
     res.status(401).json({ message: 'Access denied. No token provided.' });
     return;
@@ -475,9 +466,9 @@ export const authenticateToken = (
 
 ## 4. Authentication Controllers
 
-**Step 4.1: Create auth controller**
+**Step 4.1: Create Auth Controller**
 
-1. Ensure you're in the backend/src directory: 
+1. Ensure you're in the backend/src directory:
 ```cmd
 cd backend/src
 ```
@@ -485,7 +476,7 @@ cd backend/src
 ```cmd
 mkdir controllers
 ```
-3. Inside that directory, create a file named `authController.ts`
+3. Inside that directory, create a file named `authController.ts`:
 ```cmd
 echo. > controllers\authController.ts
 ```
@@ -588,12 +579,12 @@ export const AuthController = {
     try {
       // Use req.user from middleware
       const user = await UserModel.findByEmail((req as any).user.email);
-      
+
       if (!user) {
         res.status(404).json({ message: 'User not found' });
         return;
       }
-      
+
       // Return user without password
       const { password, ...userWithoutPassword } = user;
       res.json(userWithoutPassword);
@@ -607,15 +598,15 @@ export const AuthController = {
 
 ## 5. Authentication Routes
 
-1. Ensure you're in the backend/src directory: 
+1. Ensure you're in the backend/src directory:
 ```cmd
 cd backend/src
 ```
 2. Create a directory: `src/routes`
 ```cmd
 mkdir routes
-``` 
-3. Inside that directory, create a file named `authRoutes.ts`
+```
+3. Inside that directory, create a file named `authRoutes.ts`:
 ```cmd
 echo. > routes\authRoutes.ts
 ```
@@ -642,8 +633,8 @@ export default router;
 
 ## 6. Express Server Configuration
 
-**Step 6.1: Create main server file**
-1. In the `src` directory, create a file named `server.ts`
+**Step 6.1: Create Main Server File**
+1. In the `src` directory, create a file named `server.ts`:
 ```cmd
 echo. > server.ts
 ```
@@ -651,7 +642,7 @@ echo. > server.ts
 2. Add the following code:
 ```typescript
 import express from 'express';
-import cors from 'cors'; 
+import cors from 'cors';
 //npm i --save-dev @types/cors
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
@@ -687,8 +678,8 @@ app.listen(PORT, () => {
 export default app;
 ```
 
-**Step 6.2: Configure package.json for running the server**
-1. Open the `package.json` file in your backend directory
+**Step 6.2: Configure package.json for Running the Server**
+1. Open the `package.json` file in your backend directory.
 2. Add the following scripts:
    ```json
    "scripts": {
@@ -700,8 +691,8 @@ export default app;
 
 ## 7. Frontend Authentication Service
 
-**Step 7.1: Create auth service**
-1. Navigate to your frontend directory
+**Step 7.1: Create Auth Service**
+1. Navigate to your frontend directory:
 ```cmd
 cd frontend
 ```
@@ -710,7 +701,7 @@ cd frontend
 mkdir src\services
 ```
 
-3. Inside that directory, create a file named `authService.ts`
+3. Inside that directory, create a file named `authService.ts`:
 ```cmd
 echo. > src\services\authService.ts
 ```
@@ -730,11 +721,11 @@ export const register = async (username: string, email: string, password: string
       email,
       password
     });
-    
+
     if (response.data.token) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -751,11 +742,11 @@ export const login = async (email: string, password: string) => {
       email,
       password
     });
-    
+
     if (response.data.token) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }
-    
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -785,12 +776,12 @@ export const authHeader = () => {
   }
   return {};
 };
-   ```
+```
 
 ## 8. Frontend Login Component
 
-**Step 8.1: Create login component**
-1. Navigate to your frontend directory
+**Step 8.1: Create Login Component**
+1. Navigate to your frontend directory:
 ```cmd
 cd frontend/src/components
 ```
@@ -800,7 +791,7 @@ cd frontend/src/components
 mkdir auth
 ```
 
-3. Inside that directory, create a file named `Login.tsx`
+3. Inside that directory, create a file named `Login.tsx`:
 ```cmd
 cd auth
 echo. > src\components\auth\Login.tsx
@@ -824,12 +815,12 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email || !password) {
       setError('All fields are required');
       return;
     }
-    
+
     try {
       setLoading(true);
       await login(email, password);
@@ -852,29 +843,29 @@ const Login: React.FC = () => {
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email address</Form.Label>
-                  <Form.Control 
-                    type="email" 
+                  <Form.Control
+                    type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email" 
+                    placeholder="Enter email"
                     required
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control 
-                    type="password" 
+                  <Form.Control
+                    type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password" 
+                    placeholder="Password"
                     required
                   />
                 </Form.Group>
-                
-                <Button 
-                  variant="primary" 
-                  type="submit" 
+
+                <Button
+                  variant="primary"
+                  type="submit"
                   disabled={loading}
                   className="w-100"
                 >
@@ -897,12 +888,12 @@ export default Login;
 
 ## 9. Frontend Register Component
 
-**Step 9.1: Create register component**
-1. Navigate to the right directory
+**Step 9.1: Create Register Component**
+1. Navigate to the right directory:
 ```cmd
 cd frontend/src/components/auth
 ```
-2. create a file named `Register.tsx`
+2. Create a file named `Register.tsx`:
 ```cmd
 echo. > Register.tsx
 ```
@@ -925,17 +916,17 @@ echo. > Register.tsx
      const handleRegister = async (e: React.FormEvent) => {
        e.preventDefault();
        setError('');
-       
+
        if (!username || !email || !password || !confirmPassword) {
          setError('All fields are required');
          return;
        }
-       
+
        if (password !== confirmPassword) {
          setError('Passwords do not match');
          return;
        }
-       
+
        try {
          setLoading(true);
          await register(username, email, password);
@@ -958,51 +949,51 @@ echo. > Register.tsx
                  <Form onSubmit={handleRegister}>
                    <Form.Group className="mb-3">
                      <Form.Label>Username</Form.Label>
-                     <Form.Control 
-                       type="text" 
+                     <Form.Control
+                       type="text"
                        value={username}
                        onChange={(e) => setUsername(e.target.value)}
-                       placeholder="Enter username" 
+                       placeholder="Enter username"
                        required
                      />
                    </Form.Group>
 
                    <Form.Group className="mb-3">
                      <Form.Label>Email address</Form.Label>
-                     <Form.Control 
-                       type="email" 
+                     <Form.Control
+                       type="email"
                        value={email}
                        onChange={(e) => setEmail(e.target.value)}
-                       placeholder="Enter email" 
+                       placeholder="Enter email"
                        required
                      />
                    </Form.Group>
 
                    <Form.Group className="mb-3">
                      <Form.Label>Password</Form.Label>
-                     <Form.Control 
-                       type="password" 
+                     <Form.Control
+                       type="password"
                        value={password}
                        onChange={(e) => setPassword(e.target.value)}
-                       placeholder="Password" 
+                       placeholder="Password"
                        required
                      />
                    </Form.Group>
-                   
+
                    <Form.Group className="mb-3">
                      <Form.Label>Confirm Password</Form.Label>
-                     <Form.Control 
-                       type="password" 
+                     <Form.Control
+                       type="password"
                        value={confirmPassword}
                        onChange={(e) => setConfirmPassword(e.target.value)}
-                       placeholder="Confirm password" 
+                       placeholder="Confirm password"
                        required
                      />
                    </Form.Group>
-                   
-                   <Button 
-                     variant="primary" 
-                     type="submit" 
+
+                   <Button
+                     variant="primary"
+                     type="submit"
                      disabled={loading}
                      className="w-100"
                    >
@@ -1023,16 +1014,15 @@ echo. > Register.tsx
    export default Register;
    ```
 
----
 ## 10. Frontend Dashboard Component
 
-**Step 10.1: Create dashboard component**
+**Step 10.1: Create Dashboard Component**
 
-navigate to right directory
+Navigate to the right directory:
 ```cmd
 cd frontend
-``` 
-create the components directory
+```
+Create the components directory:
 ```cmd
 mkdir src\components
 ```
@@ -1041,7 +1031,7 @@ mkdir src\components
 ```cmd
 mkdir dashboard
 ```
-2. Inside that directory, create a file named `Dashboard.tsx`
+2. Inside that directory, create a file named `Dashboard.tsx`:
 ```cmd
 cd src\components\dashboard\
 echo. > Dashboard.tsx
@@ -1095,8 +1085,8 @@ echo. > Dashboard.tsx
                      <li className="list-group-item">User ID: {user.id}</li>
                    </ul>
                  </div>
-                 <Button 
-                   variant="primary" 
+                 <Button
+                   variant="primary"
                    onClick={handleLogout}
                    className="mt-4"
                  >
@@ -1116,7 +1106,7 @@ echo. > Dashboard.tsx
 ## 11. App Routes Configuration
 
 **Step 11.1: Update App.tsx**
-1. Open the `src/App.tsx` file in your frontend directory
+1. Open the `src/App.tsx` file in your frontend directory.
 
 2. Replace the content with:
    ```typescript
@@ -1145,13 +1135,13 @@ echo. > Dashboard.tsx
            <Routes>
              <Route path="/login" element={<Login />} />
              <Route path="/register" element={<Register />} />
-             <Route 
-               path="/dashboard" 
+             <Route
+               path="/dashboard"
                element={
                  <ProtectedRoute>
                    <Dashboard />
                  </ProtectedRoute>
-               } 
+               }
              />
              <Route path="/" element={<Navigate to="/login" />} />
            </Routes>
@@ -1164,7 +1154,7 @@ echo. > Dashboard.tsx
    ```
 
 **Step 11.2: Update index.css (optional)**
-1. Open the `src/index.css` file
+1. Open the `src/index.css` file.
 
 2. Add some basic styling:
    ```css
@@ -1188,38 +1178,7 @@ echo. > Dashboard.tsx
    }
    ```
 
-## 12. Running the Application
-
-**Step 12.1: Start the backend server**
-1. Navigate to the backend directory
-```cmd
-cd backend
-```
-
-2. Execute the following commands
-```cmd
-npm install -D ts-node-dev
-
-npm pkg set "scripts.dev"="ts-node-dev src/server.ts"
-```
-
-3. Run:
-```bash
-  npm run dev
-```
-
-**Step 12.2: Start the frontend application**
-1. Navigate to the frontend directory
-```cmd
-cd frontend
-```
-
-2. Run:
-   ```bash
-   npm start
-   ```
-
-## 13. Setting up the database
+## 12. Setting Up the Database
 
 ## Database Setup with SQL
 Here's the SQL code you needed to make the database:
@@ -1230,8 +1189,7 @@ Here's the SQL code you needed to make the database:
 CREATE DATABASE login_app_db;
 ```
 
-2. Navigate to the database you just made and go to the SQL tab
-
+2. Navigate to the database you just made and go to the SQL tab.
 
 3. Create the users table:
 
@@ -1247,35 +1205,66 @@ CREATE TABLE users (
 
 ## How to Execute These SQL Commands
 
-Based on the instructions in your document, you'll be using WAMP Server which includes phpMyAdmin for database management. Here's how to set it up:
+Based on the instructions in your document, you'll be using WAMP Server, which includes phpMyAdmin for database management. Here's how to set it up:
 
-1. Make sure WAMP Server is installed and running (you can download it from the link in the instructions)
-2. Open your web browser and navigate to: `http://localhost/phpmyadmin/`
-3. Login with username `root` and leave the password blank (unless you've set a password)
+1. Make sure WAMP Server is installed and running (you can download it from the link in the instructions).
+2. Open your web browser and navigate to: `http://localhost/phpmyadmin/`.
+3. Login with username `root` and leave the password blank (unless you've set a password).
 4. Once logged in, you can:
-   - Click on the "SQL" tab
-   - Paste each SQL command above one at a time and click "Go"
-   - Alternatively, create the database by clicking "New" in the left sidebar, then enter "login_app_db" as the name and click "Create"
-   - Then select the database and click on the "SQL" tab to create the table
+   - Click on the "SQL" tab.
+   - Paste each SQL command above one at a time and click "Go".
+   - Alternatively, create the database by clicking "New" in the left sidebar, then enter "login_app_db" as the name and click "Create".
+   - Then select the database and click on the "SQL" tab to create the table.
 
 ## Verifying Your Setup
 
 After running these commands, you should:
 
-1. See `login_app_db` in the list of databases in the left sidebar of phpMyAdmin
-2. When you click on this database, you should see a `users` table
-3. Clicking on the `users` table should show its structure with the columns: id, username, email, password, and created_at
+1. See `login_app_db` in the list of databases in the left sidebar of phpMyAdmin.
+2. When you click on this database, you should see a `users` table.
+3. Clicking on the `users` table should show its structure with the columns: id, username, email, password, and created_at.
 
 Now you have successfully set up the database required for the login/register application.
 
+## 13. Running the Application
+
+**Step 13.1: Start the Backend Server**
+1. Navigate to the backend directory:
+```cmd
+cd backend
+```
+
+2. Execute the following commands:
+```cmd
+npm install -D ts-node-dev
+
+npm pkg set "scripts.dev"="ts-node-dev src/server.ts"
+```
+
+3. Run:
+```bash
+  npm run dev
+```
+
+**Step 13.2: Start the Frontend Application**
+1. Navigate to the frontend directory:
+```cmd
+cd frontend
+```
+
+2. Run:
+```bash
+npm start
+```
+
 ## 14. Testing the Application
 
-1. Open your browser and navigate to `http://localhost:3000`
-2. You should be redirected to the login page
-3. Click "Register" to create a new account
-4. After registering, you'll be redirected to the dashboard
-5. Try logging out and logging back in
-6. Try accessing the dashboard directly without logging in - you should be redirected to login
+1. Open your browser and navigate to `http://localhost:3000`.
+2. You should be redirected to the login page.
+3. Click "Register" to create a new account.
+4. After registering, you'll be redirected to the dashboard.
+5. Try logging out and logging back in.
+6. Try accessing the dashboard directly without logging in - you should be redirected to login.
 
 [^1]:
 Example text
@@ -1287,5 +1276,3 @@ Example text
 This secret is used exclusively by your backend code to sign and verify authentication tokens
 Make sure to use a strong, random string for better security
 Never expose this secret in client-side code or commit it to public repositories
-
-[^4]:
