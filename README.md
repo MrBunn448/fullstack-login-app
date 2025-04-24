@@ -30,6 +30,7 @@ Look for the following icon if you want a detailed explaination of the current t
 
 *NOTE*: this guide is for Windows. Commands will not work on Linux or Mac
 
+
 ---
 
 Let's start with the project setup:
@@ -90,6 +91,9 @@ npx tsc --init
 ```
 
 ### 3. Frontend Setup (React + TypeScript + React Bootstrap)
+
+###  !TODO ,double check this is right!
+
 ```bash
 # Navigate back to project root
 cd ..
@@ -102,7 +106,6 @@ cd frontend
 
 # Install additional dependencies
 npm install react-bootstrap bootstrap axios react-router-dom
-```
 Next you want to define a better folder structure.
 You can do this manually or just run the following command with powershell:
 ```powershell
@@ -1020,7 +1023,6 @@ echo. > Register.tsx
    export default Register;
    ```
 
-#!TODO
 ---
 ## 10. Frontend Dashboard Component
 
@@ -1040,6 +1042,11 @@ mkdir src\components
 mkdir dashboard
 ```
 2. Inside that directory, create a file named `Dashboard.tsx`
+```cmd
+cd src\components\dashboard\
+echo. > Dashboard.tsx
+```
+
 3. Add the following code:
    ```typescript
    import React, { useEffect, useState } from 'react';
@@ -1110,6 +1117,7 @@ mkdir dashboard
 
 **Step 11.1: Update App.tsx**
 1. Open the `src/App.tsx` file in your frontend directory
+
 2. Replace the content with:
    ```typescript
    import React from 'react';
@@ -1157,6 +1165,7 @@ mkdir dashboard
 
 **Step 11.2: Update index.css (optional)**
 1. Open the `src/index.css` file
+
 2. Add some basic styling:
    ```css
    body {
@@ -1183,19 +1192,83 @@ mkdir dashboard
 
 **Step 12.1: Start the backend server**
 1. Navigate to the backend directory
-2. Run:
-   ```bash
-   npm run dev
-   ```
+```cmd
+cd backend
+```
+
+2. Execute the following commands
+```cmd
+npm install -D ts-node-dev
+
+npm pkg set "scripts.dev"="ts-node-dev src/server.ts"
+```
+
+3. Run:
+```bash
+  npm run dev
+```
 
 **Step 12.2: Start the frontend application**
 1. Navigate to the frontend directory
+```cmd
+cd frontend
+```
+
 2. Run:
    ```bash
    npm start
    ```
 
-## 13. Testing the Application
+## 13. Setting up the database
+
+## Database Setup with SQL
+Here's the SQL code you needed to make the database:
+
+1. First, create the database:
+
+```sql
+CREATE DATABASE login_app_db;
+```
+
+2. Navigate to the database you just made and go to the SQL tab
+
+
+3. Create the users table:
+
+```sql
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## How to Execute These SQL Commands
+
+Based on the instructions in your document, you'll be using WAMP Server which includes phpMyAdmin for database management. Here's how to set it up:
+
+1. Make sure WAMP Server is installed and running (you can download it from the link in the instructions)
+2. Open your web browser and navigate to: `http://localhost/phpmyadmin/`
+3. Login with username `root` and leave the password blank (unless you've set a password)
+4. Once logged in, you can:
+   - Click on the "SQL" tab
+   - Paste each SQL command above one at a time and click "Go"
+   - Alternatively, create the database by clicking "New" in the left sidebar, then enter "login_app_db" as the name and click "Create"
+   - Then select the database and click on the "SQL" tab to create the table
+
+## Verifying Your Setup
+
+After running these commands, you should:
+
+1. See `login_app_db` in the list of databases in the left sidebar of phpMyAdmin
+2. When you click on this database, you should see a `users` table
+3. Clicking on the `users` table should show its structure with the columns: id, username, email, password, and created_at
+
+Now you have successfully set up the database required for the login/register application.
+
+## 14. Testing the Application
 
 1. Open your browser and navigate to `http://localhost:3000`
 2. You should be redirected to the login page
