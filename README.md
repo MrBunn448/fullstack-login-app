@@ -1234,6 +1234,8 @@ Now you have successfully set up the database required for the login/register ap
 cd backend
 ```
 
+
+
 2. Execute the following commands:
 ```cmd
 npm install -D ts-node-dev
@@ -1255,6 +1257,11 @@ cd frontend
 2. Run:
 ```bash
 npm start
+```
+
+If you encounter this error when running npm commands in PowerShell:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 ```
 
 ## 14. Testing the Application
