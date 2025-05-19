@@ -10,7 +10,7 @@ Welcome to this comprehensive guide on setting up a full-stack login/register ap
 - **Express** - Web application framework for Node.js
 - **TypeScript** - Typed JavaScript language
 - **MySQL** - Relational database
-- **WAMP Server** - Windows, Apache, MySQL, and PHP stack
+- **XAMPP/WAMP Server** - Local development environment with Apache, MySQL, PHP
 - **bcryptjs** - Password hashing library
 - **jsonwebtoken (JWT)** - Authentication token implementation
 - **cors** - Cross-Origin Resource Sharing middleware
@@ -26,11 +26,11 @@ Welcome to this comprehensive guide on setting up a full-stack login/register ap
 ### Development Tools
 - **npm** - Package manager
 - **ts-node-dev** - TypeScript execution and development environment
-- **phpMyAdmin** (via WAMP) - Database management tool
+- **phpMyAdmin** (via XAMPP/WAMP) - Database management tool
 
 ---
 
-*NOTE*: This guide is for Windows. Commands will not work on Linux or Mac.
+*NOTE*: This guide includes commands for both Windows and Linux.
 
 ---
 
@@ -41,26 +41,55 @@ Let's start with the project setup:
 
   To install Node.js, go to the official website and run the installer:
   https://nodejs.org/en
+  
+  On Linux, you can also use:
+  ```bash
+  sudo apt update
+  sudo apt install nodejs npm  # For Debian/Ubuntu
+  ```
+  
 - npm (v8 or later)
 
-  To install npm, run the following command in cmd:
+  To install npm, run the following command:
 
+  **Windows (cmd):**
   ```cmd
   npm install -g npm@latest
   ```
+  
+  **Linux (terminal):**
+  ```bash
+  sudo npm install -g npm@latest
+  ```
+  
 - MySQL installed and running
-  (This is included with WAMP, see the following step)
+  (This is included with XAMPP, see the following step)
 
 ## Detailed Step-by-Step Setup
 
-### Set up WAMP Server
-Go to: https://wampserver.aviatechno.net/?lang=en
+### Set up XAMPP Server
+1. Download XAMPP:
+   - For Windows: https://www.apachefriends.org/download.html
+   - For Linux: https://www.apachefriends.org/download.html (download the Linux version)
 
-And scroll all the way down to the page where it says:
-All VC Redistributable Packages (x86_x64) (32 & 64bits) MD5
-![Image of file location on the website](image.png)
+2. Install XAMPP:
+   - Windows: Run the downloaded installer and follow the instructions
+   - Linux:
+     ```bash
+     chmod +x xampp-linux-*-installer.run
+     sudo ./xampp-linux-*-installer.run
+     ```
+
+3. Start XAMPP services:
+   - Windows: Open XAMPP Control Panel and start Apache and MySQL
+   - Linux:
+     ```bash
+     sudo /opt/lampp/lampp start
+     ```
 
 ### 1. Create Project Directory and Initialize
+
+**Windows (cmd):**
 ```bash
 # Create a new directory for your project
 mkdir fullstack-login-app
@@ -70,7 +99,37 @@ cd fullstack-login-app
 mkdir frontend backend
 ```
 
+**Linux (terminal):**
+```bash
+# Create a new directory for your project
+mkdir fullstack-login-app
+cd fullstack-login-app
+
+# Create subdirectories for frontend and backend
+mkdir -p frontend backend
+```
+
 ### 2. Backend Setup
+
+**Windows (cmd):**
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Initialize the npm project
+npm init -y
+
+# Install core dependencies
+npm install express mysql2 bcryptjs jsonwebtoken cors dotenv
+
+# Install TypeScript and type definitions
+npm install -D typescript @types/express @types/node @types/bcryptjs @types/jsonwebtoken ts-node-dev
+
+# Initialize TypeScript configuration
+npx tsc --init
+```
+
+**Linux (terminal):**
 ```bash
 # Navigate to the backend directory
 cd backend
@@ -90,6 +149,7 @@ npx tsc --init
 
 ### 3. Frontend Setup
 
+**Windows (cmd):**
 ```bash
 # Navigate back to the project root
 cd ..
@@ -104,8 +164,24 @@ cd frontend
 npm install react-bootstrap bootstrap axios react-router-dom
 ```
 
-Next, you want to define a better folder structure. You can do this manually or just run the following command with PowerShell:
+**Linux (terminal):**
+```bash
+# Navigate back to the project root
+cd ..
 
+# Create a React app with the TypeScript template
+npx create-react-app frontend --template typescript
+
+# Navigate to the frontend
+cd frontend
+
+# Install additional dependencies
+npm install react-bootstrap bootstrap axios react-router-dom
+```
+
+Next, you want to define a better folder structure. You can do this manually or just run the following command:
+
+**Windows (PowerShell):**
 ```powershell
 # For backend
 cd backend
@@ -116,22 +192,38 @@ cd ..\frontend
 mkdir src\components, src\pages, src\services
 ```
 
-### 4. Database Preparation
-For the next part, I recommend just using WAMP to have phpMyAdmin installed/running.
+**Linux (terminal):**
+```bash
+# For backend
+cd backend
+mkdir -p src/controllers src/routes src/models src/middleware src/config
 
-Open WAMP and go to `localhost/phpmyadmin`.
-
-Create the database and table manually using the GUI, or navigate to the SQL tab and run the following commands:
-
-```sql
-# Create the database
-CREATE DATABASE login_app_db;
+# For frontend
+cd ../frontend
+mkdir -p src/components src/pages src/services
 ```
 
-Then navigate to the database you just created and run the following command:
+### 4. Database Preparation
+For the next part, we'll use XAMPP's phpMyAdmin to set up the database.
+
+**Windows:**
+1. Open XAMPP Control Panel and start Apache and MySQL services
+2. Go to `http://localhost/phpmyadmin` in your browser
+
+**Linux:**
+1. Start XAMPP services:
+   ```bash
+   sudo /opt/lampp/lampp start
+   ```
+2. Go to `http://localhost/phpmyadmin` in your browser
+
+In phpMyAdmin:
+1. Click on "New" in the left sidebar
+2. Enter "login_app_db" as the database name and click "Create"
+3. Select the new database and click on the "SQL" tab
+4. Paste and execute the following SQL:
 
 ```sql
-# Create the users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -195,23 +287,28 @@ This structure follows conventions used in many professional Node.js/Express app
 
 #### 1. Navigate to the Right Directory
 
-Make sure you are in the project root directory. How you do this depends on where you are currently in the command line.
+Make sure you are in the project root directory, then navigate to the backend directory:
 
-*How do I navigate in the terminal?* [^2]
-
-Then navigate to the backend directory:
+**Windows (cmd):**
 ```cmd
 cd backend
 ```
 
-#### 2. Create a New File Using CMD
+**Linux (terminal):**
+```bash
+cd backend
+```
+
+#### 2. Create a New File
+
+**Windows (cmd):**
 ```cmd
 echo. > .env
 ```
 
-#### Or Using PowerShell:
-```powershell
-New-Item -Path .env -ItemType File -Force
+**Linux (terminal):**
+```bash
+touch .env
 ```
 
 #### 3. Add JWT Secret to Environment File
@@ -234,198 +331,174 @@ JWT_SECRET=your_super_secure_jwt_secret
 
 ### **Step 1.2: Create Database Configuration File**
 
-*NOTE*: For this part, there will be a step-by-step guide for both CMD and PowerShell. But for the rest of the project, I will only provide the CMD commands. If you want to use PowerShell, you can look up the respective commands.
+#### Navigate to the project directory:
 
-#### Option 1: Using Command Prompt (CMD)
+**Windows (cmd):**
+```cmd
+cd backend
+```
 
-1. Navigate to the backend directory:
-  ```cmd
-  cd backend
-  ```
+**Linux (terminal):**
+```bash
+cd backend
+```
 
-2. Create the config directory:
-  ```cmd
-  mkdir src\config
-  ```
+#### Create the config directory:
 
-3. Navigate to the config directory:
-  ```cmd
-  cd src\config
-  ```
+**Windows (cmd):**
+```cmd
+mkdir src\config
+```
 
-4. Create the `database.ts` file:
-  ```cmd
-  echo. > database.ts
-  ```
+**Linux (terminal):**
+```bash
+mkdir -p src/config
+```
 
-5. Open the file in your editor and add the following code:
-  ```typescript
-  import mysql from 'mysql2';
-  import dotenv from 'dotenv';
+#### Navigate to the config directory and create the database.ts file:
 
-  // Load environment variables
-  dotenv.config();
+**Windows (cmd):**
+```cmd
+cd src\config
+echo. > database.ts
+```
 
-  // Create MySQL connection
-  export const dbConnection = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'login_app_db'
-  });
-  ```
+**Linux (terminal):**
+```bash
+cd src/config
+touch database.ts
+```
 
-#### Option 2: Using PowerShell
+Open the file in your editor and add the following code:
+```typescript
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
 
-1. Navigate to the backend directory:
-  ```powershell
-  cd backend
-  ```
+// Load environment variables
+dotenv.config();
 
-2. Create the config directory:
-  ```powershell
-  New-Item -Path "src\config" -ItemType Directory -Force
-  ```
-
-3. Create the `database.ts` file directly:
-  ```powershell
-  New-Item -Path "src\config\database.ts" -ItemType File -Force
-  ```
-
-4. Open the file in your editor and add the following code:
-  ```typescript
-  import mysql from 'mysql2';
-  import dotenv from 'dotenv';
-
-  // Load environment variables
-  dotenv.config();
-
-  // Create MySQL connection
-  export const dbConnection = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'login_app_db'
-  });
-  ```
+// Create MySQL connection
+export const dbConnection = mysql.createConnection({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'login_app_db'
+});
+```
 
 ## 2. User Model Creation
 
 **Step 2.1: Create User Model**
 
-1. Navigate to the backend directory:
-  ```cmd
-  cd backend
-  ```
+**Windows (cmd):**
+```cmd
+cd backend
+mkdir src\models
+cd src\models
+echo. > userModel.ts
+```
 
-2. Create the models directory (if it doesn't exist):
-  ```cmd
-  mkdir src\models
-  ```
+**Linux (terminal):**
+```bash
+cd backend
+mkdir -p src/models
+cd src/models
+touch userModel.ts
+```
 
-3. Navigate to the models directory:
-  ```cmd
-  cd src\models
-  ```
+Open the file in your preferred text editor and add the following code:
+```typescript
+import { dbConnection } from '../config/database';
+import bcrypt from 'bcryptjs';
 
-4. Create the user model file:
-  ```cmd
-  echo. > userModel.ts
-  ```
+interface User {
+  id?: number;
+  username: string;
+  email: string;
+  password: string;
+  created_at?: Date;
+}
 
-5. Open the file in your preferred text editor and add the following code:
-  ```typescript
-  import { dbConnection } from '../config/database';
-  import bcrypt from 'bcryptjs';
+export const UserModel = {
+  // Find user by email
+  findByEmail: (email: string): Promise<User | null> => {
+   return new Promise((resolve, reject) => {
+    dbConnection.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email],
+      (err, results: any) => {
+       if (err) return reject(err);
+       if (results.length === 0) return resolve(null);
+       return resolve(results[0]);
+      }
+    );
+   });
+  },
 
-  interface User {
-    id?: number;
-    username: string;
-    email: string;
-    password: string;
-    created_at?: Date;
+  // Find user by username
+  findByUsername: (username: string): Promise<User | null> => {
+   return new Promise((resolve, reject) => {
+    dbConnection.query(
+      'SELECT * FROM users WHERE username = ?',
+      [username],
+      (err, results: any) => {
+       if (err) return reject(err);
+       if (results.length === 0) return resolve(null);
+       return resolve(results[0]);
+      }
+    );
+   });
+  },
+
+  // Create new user
+  create: async (userData: User): Promise<User> => {
+   // Hash password
+   const salt = await bcrypt.genSalt(10);
+   const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+   return new Promise((resolve, reject) => {
+    dbConnection.query(
+      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+      [userData.username, userData.email, hashedPassword],
+      (err, result: any) => {
+       if (err) return reject(err);
+
+       // Return created user (without password)
+       const newUser = {
+        id: result.insertId,
+        username: userData.username,
+        email: userData.email,
+        password: '',
+        created_at: new Date()
+       };
+
+       return resolve(newUser);
+      }
+    );
+   });
   }
-
-  export const UserModel = {
-    // Find user by email
-    findByEmail: (email: string): Promise<User | null> => {
-     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        'SELECT * FROM users WHERE email = ?',
-        [email],
-        (err, results: any) => {
-         if (err) return reject(err);
-         if (results.length === 0) return resolve(null);
-         return resolve(results[0]);
-        }
-      );
-     });
-    },
-
-    // Find user by username
-    findByUsername: (username: string): Promise<User | null> => {
-     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        'SELECT * FROM users WHERE username = ?',
-        [username],
-        (err, results: any) => {
-         if (err) return reject(err);
-         if (results.length === 0) return resolve(null);
-         return resolve(results[0]);
-        }
-      );
-     });
-    },
-
-    // Create new user
-    create: async (userData: User): Promise<User> => {
-     // Hash password
-     const salt = await bcrypt.genSalt(10);
-     const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-        [userData.username, userData.email, hashedPassword],
-        (err, result: any) => {
-         if (err) return reject(err);
-
-         // Return created user (without password)
-         const newUser = {
-          id: result.insertId,
-          username: userData.username,
-          email: userData.email,
-          password: '',
-          created_at: new Date()
-         };
-
-         return resolve(newUser);
-        }
-      );
-     });
-    }
-  };
-  ```
+};
+```
 
 ## 3. Authentication Middleware
 
 **Step 3.1: Create Auth Middleware**
-1. Navigate to the backend directory:
-  ```cmd
-  cd backend/src
-  ```
 
-2. Create a directory: `middleware`
+**Windows (cmd):**
 ```cmd
+cd backend\src
 mkdir middleware
-```
-
-3. Inside that directory, create a file named `authMiddleware.ts`:
-```cmd
 echo. > middleware\authMiddleware.ts
 ```
 
-4. Add the following code:
+**Linux (terminal):**
+```bash
+cd backend/src
+mkdir -p middleware
+touch middleware/authMiddleware.ts
+```
+
+Add the following code:
 ```typescript
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -468,21 +541,23 @@ export const authenticateToken = (
 
 **Step 4.1: Create Auth Controller**
 
-1. Ensure you're in the backend/src directory:
+**Windows (cmd):**
 ```cmd
-cd backend/src
-```
-2. Create a directory: `controllers`
-```cmd
+cd backend\src
 mkdir controllers
-```
-3. Inside that directory, create a file named `authController.ts`:
-```cmd
 echo. > controllers\authController.ts
 ```
-4. Add the following code:
+
+**Linux (terminal):**
+```bash
+cd backend/src
+mkdir -p controllers
+touch controllers/authController.ts
+```
+
+Add the following code:
 ```typescript
-   import { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/userModel';
@@ -598,22 +673,23 @@ export const AuthController = {
 
 ## 5. Authentication Routes
 
-1. Ensure you're in the backend/src directory:
+**Windows (cmd):**
 ```cmd
-cd backend/src
-```
-2. Create a directory: `src/routes`
-```cmd
+cd backend\src
 mkdir routes
-```
-3. Inside that directory, create a file named `authRoutes.ts`:
-```cmd
 echo. > routes\authRoutes.ts
 ```
 
-3. Add the following code:
+**Linux (terminal):**
+```bash
+cd backend/src
+mkdir -p routes
+touch routes/authRoutes.ts
+```
+
+Add the following code:
 ```typescript
-   import express from 'express';
+import express from 'express';
 import { AuthController } from '../controllers/authController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -634,12 +710,20 @@ export default router;
 ## 6. Express Server Configuration
 
 **Step 6.1: Create Main Server File**
-1. In the `src` directory, create a file named `server.ts`:
+
+**Windows (cmd):**
 ```cmd
+cd backend\src
 echo. > server.ts
 ```
 
-2. Add the following code:
+**Linux (terminal):**
+```bash
+cd backend/src
+touch server.ts
+```
+
+Add the following code:
 ```typescript
 import express from 'express';
 import cors from 'cors';
@@ -692,21 +776,22 @@ export default app;
 ## 7. Frontend Authentication Service
 
 **Step 7.1: Create Auth Service**
-1. Navigate to your frontend directory:
+
+**Windows (cmd):**
 ```cmd
 cd frontend
-```
-2. Create a directory: `src/services`
-```cmd
 mkdir src\services
-```
-
-3. Inside that directory, create a file named `authService.ts`:
-```cmd
 echo. > src\services\authService.ts
 ```
 
-4. Add the following code:
+**Linux (terminal):**
+```bash
+cd frontend
+mkdir -p src/services
+touch src/services/authService.ts
+```
+
+Add the following code:
 ```typescript
 import axios from 'axios';
 //run `npm install axios` to install axios
@@ -781,22 +866,22 @@ export const authHeader = () => {
 ## 8. Frontend Login Component
 
 **Step 8.1: Create Login Component**
-1. Navigate to your frontend directory:
-```cmd
-cd frontend/src/components
-```
 
-2. Create the auth directory:
+**Windows (cmd):**
 ```cmd
-mkdir auth
-```
-
-3. Inside that directory, create a file named `Login.tsx`:
-```cmd
-cd auth
+cd frontend
+mkdir src\components\auth
 echo. > src\components\auth\Login.tsx
 ```
-3. Add the following code:
+
+**Linux (terminal):**
+```bash
+cd frontend
+mkdir -p src/components/auth
+touch src/components/auth/Login.tsx
+```
+
+Add the following code:
 ```typescript
 import React, { useState } from 'react';
 //npm install react @types/react
@@ -889,219 +974,219 @@ export default Login;
 ## 9. Frontend Register Component
 
 **Step 9.1: Create Register Component**
-1. Navigate to the right directory:
+
+**Windows (cmd):**
 ```cmd
-cd frontend/src/components/auth
-```
-2. Create a file named `Register.tsx`:
-```cmd
+cd frontend\src\components\auth
 echo. > Register.tsx
 ```
-2. Add the following code:
-   ```typescript
-   import React, { useState } from 'react';
-   import { Form, Button, Alert, Container, Row, Col, Card } from 'react-bootstrap';
-   import { register } from '../../services/authService';
-   import { useNavigate } from 'react-router-dom';
 
-   const Register: React.FC = () => {
-     const [username, setUsername] = useState('');
-     const [email, setEmail] = useState('');
-     const [password, setPassword] = useState('');
-     const [confirmPassword, setConfirmPassword] = useState('');
-     const [loading, setLoading] = useState(false);
-     const [error, setError] = useState('');
-     const navigate = useNavigate();
+**Linux (terminal):**
+```bash
+cd frontend/src/components/auth
+touch Register.tsx
+```
 
-     const handleRegister = async (e: React.FormEvent) => {
-       e.preventDefault();
-       setError('');
+Add the following code:
+```typescript
+import React, { useState } from 'react';
+import { Form, Button, Alert, Container, Row, Col, Card } from 'react-bootstrap';
+import { register } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
-       if (!username || !email || !password || !confirmPassword) {
-         setError('All fields are required');
-         return;
-       }
+const Register: React.FC = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-       if (password !== confirmPassword) {
-         setError('Passwords do not match');
-         return;
-       }
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
 
-       try {
-         setLoading(true);
-         await register(username, email, password);
-         navigate('/dashboard');
-       } catch (err) {
-         setError(err instanceof Error ? err.message : 'Registration failed');
-       } finally {
-         setLoading(false);
-       }
-     };
+    if (!username || !email || !password || !confirmPassword) {
+      setError('All fields are required');
+      return;
+    }
 
-     return (
-       <Container>
-         <Row className="justify-content-md-center mt-5">
-           <Col md={6}>
-             <Card>
-               <Card.Header as="h5">Register</Card.Header>
-               <Card.Body>
-                 {error && <Alert variant="danger">{error}</Alert>}
-                 <Form onSubmit={handleRegister}>
-                   <Form.Group className="mb-3">
-                     <Form.Label>Username</Form.Label>
-                     <Form.Control
-                       type="text"
-                       value={username}
-                       onChange={(e) => setUsername(e.target.value)}
-                       placeholder="Enter username"
-                       required
-                     />
-                   </Form.Group>
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
 
-                   <Form.Group className="mb-3">
-                     <Form.Label>Email address</Form.Label>
-                     <Form.Control
-                       type="email"
-                       value={email}
-                       onChange={(e) => setEmail(e.target.value)}
-                       placeholder="Enter email"
-                       required
-                     />
-                   </Form.Group>
+    try {
+      setLoading(true);
+      await register(username, email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                   <Form.Group className="mb-3">
-                     <Form.Label>Password</Form.Label>
-                     <Form.Control
-                       type="password"
-                       value={password}
-                       onChange={(e) => setPassword(e.target.value)}
-                       placeholder="Password"
-                       required
-                     />
-                   </Form.Group>
+  return (
+    <Container>
+      <Row className="justify-content-md-center mt-5">
+        <Col md={6}>
+          <Card>
+            <Card.Header as="h5">Register</Card.Header>
+            <Card.Body>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleRegister}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter username"
+                    required
+                  />
+                </Form.Group>
 
-                   <Form.Group className="mb-3">
-                     <Form.Label>Confirm Password</Form.Label>
-                     <Form.Control
-                       type="password"
-                       value={confirmPassword}
-                       onChange={(e) => setConfirmPassword(e.target.value)}
-                       placeholder="Confirm password"
-                       required
-                     />
-                   </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email"
+                    required
+                  />
+                </Form.Group>
 
-                   <Button
-                     variant="primary"
-                     type="submit"
-                     disabled={loading}
-                     className="w-100"
-                   >
-                     {loading ? 'Registering...' : 'Register'}
-                   </Button>
-                 </Form>
-               </Card.Body>
-               <Card.Footer className="text-center">
-                 Already have an account? <a href="/login">Login</a>
-               </Card.Footer>
-             </Card>
-           </Col>
-         </Row>
-       </Container>
-     );
-   };
+                <Form.Group className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    required
+                  />
+                </Form.Group>
 
-   export default Register;
-   ```
+                <Form.Group className="mb-3">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm password"
+                    required
+                  />
+                </Form.Group>
+
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={loading}
+                  className="w-100"
+                >
+                  {loading ? 'Registering...' : 'Register'}
+                </Button>
+              </Form>
+            </Card.Body>
+            <Card.Footer className="text-center">
+              Already have an account? <a href="/login">Login</a>
+            </Card.Footer>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+export default Register;
+```
 
 ## 10. Frontend Dashboard Component
 
 **Step 10.1: Create Dashboard Component**
 
-Navigate to the right directory:
+**Windows (cmd):**
 ```cmd
 cd frontend
-```
-Create the components directory:
-```cmd
-mkdir src\components
+mkdir src\components\dashboard
+echo. > src\components\dashboard\Dashboard.tsx
 ```
 
-1. Create a directory: `dashboard`
-```cmd
-mkdir dashboard
-```
-2. Inside that directory, create a file named `Dashboard.tsx`:
-```cmd
-cd src\components\dashboard\
-echo. > Dashboard.tsx
+**Linux (terminal):**
+```bash
+cd frontend
+mkdir -p src/components/dashboard
+touch src/components/dashboard/Dashboard.tsx
 ```
 
-3. Add the following code:
-   ```typescript
-   import React, { useEffect, useState } from 'react';
-   import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-   import { getCurrentUser, logout } from '../../services/authService';
-   import { useNavigate } from 'react-router-dom';
+Add the following code:
+```typescript
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { getCurrentUser, logout } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
-   const Dashboard: React.FC = () => {
-     const [user, setUser] = useState<any>(null);
-     const navigate = useNavigate();
+const Dashboard: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
 
-     useEffect(() => {
-       const currentUser = getCurrentUser();
-       if (!currentUser) {
-         navigate('/login');
-         return;
-       }
-       setUser(currentUser.user);
-     }, [navigate]);
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+    setUser(currentUser.user);
+  }, [navigate]);
 
-     const handleLogout = () => {
-       logout();
-       navigate('/login');
-     };
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
-     if (!user) {
-       return <div>Loading...</div>;
-     }
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
-     return (
-       <Container>
-         <Row className="justify-content-md-center mt-5">
-           <Col md={8}>
-             <Card>
-               <Card.Header as="h5">Dashboard</Card.Header>
-               <Card.Body>
-                 <Card.Title>Welcome, {user.username}!</Card.Title>
-                 <Card.Text>
-                   You have successfully logged in to the application.
-                 </Card.Text>
-                 <div className="mt-4">
-                   <h6>User Information:</h6>
-                   <ul className="list-group">
-                     <li className="list-group-item">Username: {user.username}</li>
-                     <li className="list-group-item">Email: {user.email}</li>
-                     <li className="list-group-item">User ID: {user.id}</li>
-                   </ul>
-                 </div>
-                 <Button
-                   variant="primary"
-                   onClick={handleLogout}
-                   className="mt-4"
-                 >
-                   Logout
-                 </Button>
-               </Card.Body>
-             </Card>
-           </Col>
-         </Row>
-       </Container>
-     );
-   };
+  return (
+    <Container>
+      <Row className="justify-content-md-center mt-5">
+        <Col md={8}>
+          <Card>
+            <Card.Header as="h5">Dashboard</Card.Header>
+            <Card.Body>
+              <Card.Title>Welcome, {user.username}!</Card.Title>
+              <Card.Text>
+                You have successfully logged in to the application.
+              </Card.Text>
+              <div className="mt-4">
+                <h6>User Information:</h6>
+                <ul className="list-group">
+                  <li className="list-group-item">Username: {user.username}</li>
+                  <li className="list-group-item">Email: {user.email}</li>
+                  <li className="list-group-item">User ID: {user.id}</li>
+                </ul>
+              </div>
+              <Button
+                variant="primary"
+                onClick={handleLogout}
+                className="mt-4"
+              >
+                Logout
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
-   export default Dashboard;
-   ```
+export default Dashboard;
+```
 
 ## 11. App Routes Configuration
 
@@ -1109,89 +1194,96 @@ echo. > Dashboard.tsx
 1. Open the `src/App.tsx` file in your frontend directory.
 
 2. Replace the content with:
-   ```typescript
-   import React from 'react';
-   import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-   import { Container } from 'react-bootstrap';
-   import Login from './components/auth/Login';
-   import Register from './components/auth/Register';
-   import Dashboard from './components/dashboard/Dashboard';
-   import { getCurrentUser } from './services/authService';
-   import 'bootstrap/dist/css/bootstrap.min.css';
+```typescript
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import Dashboard from './components/dashboard/Dashboard';
+import { getCurrentUser } from './services/authService';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-   // Protected route component
-   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-     const user = getCurrentUser();
-     if (!user) {
-       return <Navigate to="/login" />;
-     }
-     return <>{children}</>;
-   };
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = getCurrentUser();
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+  return <>{children}</>;
+};
 
-   function App() {
-     return (
-       <Router>
-         <Container className="py-4">
-           <Routes>
-             <Route path="/login" element={<Login />} />
-             <Route path="/register" element={<Register />} />
-             <Route
-               path="/dashboard"
-               element={
-                 <ProtectedRoute>
-                   <Dashboard />
-                 </ProtectedRoute>
-               }
-             />
-             <Route path="/" element={<Navigate to="/login" />} />
-           </Routes>
-         </Container>
-       </Router>
-     );
-   }
+function App() {
+  return (
+    <Router>
+      <Container className="py-4">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </Container>
+    </Router>
+  );
+}
 
-   export default App;
-   ```
+export default App;
+```
 
 **Step 11.2: Update index.css (optional)**
 1. Open the `src/index.css` file.
 
 2. Add some basic styling:
-   ```css
-   body {
-     margin: 0;
-     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-       sans-serif;
-     -webkit-font-smoothing: antialiased;
-     -moz-osx-font-smoothing: grayscale;
-     background-color: #f8f9fa;
-   }
+```css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
 
-   code {
-     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-       monospace;
-   }
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
 
-   .card {
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-   }
-   ```
-
-## 12. Setting Up the Database
-
-## Database Setup with SQL
-Here's the SQL code you needed to make the database:
-
-1. First, create the database:
-
-```sql
-CREATE DATABASE login_app_db;
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 ```
 
-2. Navigate to the database you just made and go to the SQL tab.
+## 12. Setting Up the Database with XAMPP
 
-3. Create the users table:
+### Database Setup with XAMPP
+
+1. Start XAMPP:
+   - **Windows**: Open XAMPP Control Panel and start Apache and MySQL services
+   - **Linux**: Run `sudo /opt/lampp/lampp start`
+
+2. Open phpMyAdmin:
+   - Open your browser and navigate to `http://localhost/phpmyadmin`
+   - Login (default username is usually "root" with no password)
+
+3. Create the database:
+   - Click "New" in the left sidebar
+   - Enter "login_app_db" as the database name
+   - Click "Create"
+
+4. Create the users table:
+   - Select the "login_app_db" database from the left sidebar
+   - Select the "SQL" tab
+   - Paste this code and click "Go":
 
 ```sql
 CREATE TABLE users (
@@ -1202,19 +1294,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
-
-## How to Execute These SQL Commands
-
-Based on the instructions in your document, you'll be using WAMP Server, which includes phpMyAdmin for database management. Here's how to set it up:
-
-1. Make sure WAMP Server is installed and running (you can download it from the link in the instructions).
-2. Open your web browser and navigate to: `http://localhost/phpmyadmin/`.
-3. Login with username `root` and leave the password blank (unless you've set a password).
-4. Once logged in, you can:
-   - Click on the "SQL" tab.
-   - Paste each SQL command above one at a time and click "Go".
-   - Alternatively, create the database by clicking "New" in the left sidebar, then enter "login_app_db" as the name and click "Create".
-   - Then select the database and click on the "SQL" tab to create the table.
 
 ## Verifying Your Setup
 
@@ -1229,39 +1308,41 @@ Now you have successfully set up the database required for the login/register ap
 ## 13. Running the Application
 
 **Step 13.1: Start the Backend Server**
-1. Navigate to the backend directory:
+
+**Windows (cmd):**
 ```cmd
 cd backend
-```
-
-
-
-2. Execute the following commands:
-```cmd
 npm install -D ts-node-dev
-
 npm pkg set "scripts.dev"="ts-node-dev src/server.ts"
+npm run dev
 ```
 
-3. Run:
+**Linux (terminal):**
 ```bash
-  npm run dev
+cd backend
+npm install -D ts-node-dev
+npm pkg set "scripts.dev"="ts-node-dev src/server.ts"
+npm run dev
 ```
 
 **Step 13.2: Start the Frontend Application**
-1. Navigate to the frontend directory:
+
+**Windows (cmd):**
 ```cmd
 cd frontend
-```
-
-2. Run:
-```bash
 npm start
 ```
 
-If you encounter this error when running npm commands in PowerShell:
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+**Linux (terminal):**
+```bash
+cd frontend
+npm start
+```
+
+If you encounter permission issues on Linux when running npm commands:
+```bash
+sudo chown -R $USER:$GROUP ~/.npm
+sudo chown -R $USER:$GROUP .
 ```
 
 ## 14. Testing the Application
@@ -1278,8 +1359,8 @@ Example text
 
 [^2]: https://www.digitalcitizen.life/command-prompt-how-use-basic-commands/
 
-
 [^3]: The JWT_SECRET is only needed in your server-side code via this .env file You do NOT need to configure it in phpMyAdmin or your database
 This secret is used exclusively by your backend code to sign and verify authentication tokens
 Make sure to use a strong, random string for better security
 Never expose this secret in client-side code or commit it to public repositories
+
